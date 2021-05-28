@@ -94,10 +94,10 @@ namespace N1Graphs
 				this._listaAberta.Remove(NoComMinCustoF);
 				this._listaFechada.Add(NoComMinCustoF);
 
-				AdicionaNaListaAberta(new Coordenada(NoComMinCustoF.Ponto.x - 1, NoComMinCustoF.Ponto.y), NoComMinCustoF);
-				AdicionaNaListaAberta(new Coordenada(NoComMinCustoF.Ponto.x + 1, NoComMinCustoF.Ponto.y), NoComMinCustoF);
-				AdicionaNaListaAberta(new Coordenada(NoComMinCustoF.Ponto.x, NoComMinCustoF.Ponto.y - 1), NoComMinCustoF);
-				AdicionaNaListaAberta(new Coordenada(NoComMinCustoF.Ponto.x, NoComMinCustoF.Ponto.y + 1), NoComMinCustoF);
+				AdicionaNaListaAberta(new Coordenada(NoComMinCustoF.Ponto.x - 1, NoComMinCustoF.Ponto.y), NoComMinCustoF); //esquerda
+				AdicionaNaListaAberta(new Coordenada(NoComMinCustoF.Ponto.x + 1, NoComMinCustoF.Ponto.y), NoComMinCustoF); //direita
+				AdicionaNaListaAberta(new Coordenada(NoComMinCustoF.Ponto.x, NoComMinCustoF.Ponto.y - 1), NoComMinCustoF); //cima
+				AdicionaNaListaAberta(new Coordenada(NoComMinCustoF.Ponto.x, NoComMinCustoF.Ponto.y + 1), NoComMinCustoF); //baixo
 				if (_podeDiagonal)
 				{
 					AdicionaNaListaAberta(new Coordenada(NoComMinCustoF.Ponto.x - 1, NoComMinCustoF.Ponto.y - 1), NoComMinCustoF);
@@ -166,14 +166,58 @@ namespace N1Graphs
 			return Math.Abs(current.Ponto.x - this._pontoFinal.x) + Math.Abs(current.Ponto.y - this._pontoFinal.y);
 		}
 
-		//TODO: tentar deixar de maneira visual na matrix utilizada.
-		public static void MostrarCaminhos(Node noFinal)
+		public static void MostrarCaminhos(Node noFinal, int[,] mapa, AEstrela config)
 		{
+			var mapaVisual = MontarCaminho(mapa);
+			string andavel, obstaculo;
+
+			if (config.ehAndavel == 0)
+			{
+				andavel = "O";
+				obstaculo = "X";
+			}
+			else
+			{
+				andavel = "X";
+				obstaculo = "O";
+			}
+			Console.WriteLine($"Camino do algoritmo é feito pelo *, espaços andavéis {andavel} e obstáculos {obstaculo}");
+
 			while (noFinal != null)
 			{
-				Console.WriteLine($"X:{noFinal.Ponto.x}; Y:{noFinal.Ponto.y}");
+				//Console.WriteLine($"X:{noFinal.Ponto.x}; Y:{noFinal.Ponto.y}");
+				mapaVisual[noFinal.Ponto.y, noFinal.Ponto.x] = "*";
 				noFinal = noFinal.Anterior;
 			}
+
+			for (int i = 0; i < mapaVisual.GetLength(0); i++)
+			{
+				for (int j = 0; j < mapaVisual.GetLength(1); j++)
+				{
+					Console.Write($"{mapaVisual[i, j]} ");
+				}
+				Console.WriteLine();
+			}
+		}
+
+		private static string[,] MontarCaminho(int[,] mapa)
+		{
+			string[,] mapaVisual = new string[mapa.GetLength(0), mapa.GetLength(1)];
+			for (int i = 0; i < mapa.GetLength(0); i++)
+			{
+				for (int j = 0; j < mapa.GetLength(1); j++)
+				{
+					if (mapa[i, j] != 0)
+					{
+						mapaVisual[i, j] = "X";
+					}
+					else
+					{
+						mapaVisual[i, j] = "O";
+					}
+				}
+			}
+			return mapaVisual;
 		}
 	}
 
@@ -269,9 +313,6 @@ namespace N1Graphs
 	/// <summary>
 	/// Define quais valores de terrenos temos.
 	/// </summary>
-	/// <remarks>
-	/// Isto foi criado para facilitar a visualização dentro da matrix.
-	/// </remarks>
 	internal enum TiposTerreno
 	{
 		Andavel = 0,

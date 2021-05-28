@@ -20,9 +20,10 @@ namespace N1Graphs
 								{1,1,1,1,1,1,1,1 },//5
 						};
 
-			AEstrela init = new AEstrela(map, new Coordenada(1, 1), new Coordenada(6, 4), podeDiagonal: true);
+			AEstrela init = new AEstrela(map, new Coordenada(1, 1), new Coordenada(6, 4));
+			//AEstrela init = new AEstrela(map, new Coordenada(1, 1), new Coordenada(6, 4), podeDiagonal: true);
 			var node = init.Executar();
-			AEstrela.MostrarCaminhos(node);
+			AEstrela.MostrarCaminhos(node, map, init);
 		}
 	}
 }
